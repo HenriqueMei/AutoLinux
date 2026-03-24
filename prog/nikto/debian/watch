@@ -1,0 +1,6 @@
+Version: 5
+
+Template: Github
+Owner: sullo
+Project: nikto
+Uversionmangle: s/[-+.](beta|alpha|rc)/~$1/
