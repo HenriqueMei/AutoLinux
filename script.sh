@@ -2,6 +2,8 @@
 
 sudo apt update && sudo apt full-upgrade -y
 mkdir -p ~/src
+mkdir -p ~/.local/share/applications
+mkdir -p ~/Desktop
 
 # Energia: Sempre Ligado (Tampa fechada e inatividade)
 sudo sed -i 's/.*HandleLidSwitch=.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf
@@ -44,14 +46,14 @@ sudo apt install ruby-full build-essential zlib1g-dev -y && sudo gem install wps
 
 #==============================================LBD==============================================
 cd ~/src && git clone https://github.com/HenriqueMei/AutoLinux
-cd ~/src/lbd
-chmod +x lbd 
+cd ~/src/AutoLinux/prog/lbd
+chmod +x lbd
 sudo cp lbd /usr/bin/lbd
 
 #==============================================Nikto==============================================
 cd ~/src
-chmod +x ~/src/nikto/program/nikto.pl
-if ! grep -q "alias nikto=" ~/.bashrc; then 
+chmod +x ~/src/AutoLinux/prog/nikto/program/nikto.pl
+if ! grep -q "alias nikto=" ~/.bashrc; then
 	echo "alias nikto='~/src/nikto/program/nikto.pl'" >> ~/.bashrc 
 fi 
 
@@ -63,7 +65,7 @@ cd john/src
 ./configure && make -s clean && make -sj$(nproc)
 
 cd ~/src/john/run
-echo “Testando John 🔄”
+echo “Testando John”
 ./john --test=0
 ./john --list=build-info
 
@@ -124,23 +126,51 @@ if ! grep -q "alias setoolkit=" ~/.bashrc; then
 fi
 
 #==============================================Wordlists (SecLists e RockYou)============================================== 
-echo "Baixando Wordlists (isso pode demorar)... 🔄" 
-sudo mkdir -p /usr/share/wordlists 
-cd /usr/share/wordlists 
+echo "Baixando Wordlists (isso pode demorar)..."
+sudo mkdir -p /usr/share/
+sudo mv /src/AutoLinux/wordlist /usr/share/
+cd /usr/share/wordlist
+tar xvzf rockyou.tar.gz
+tar xvzf metasploit.tar.gz
+rm rockyou.tar.gz
+rm metasploit.tar.gz
 
-# SecLists (Depth 1 para ser mais rápido) 
+# SecLists (Depth 1 para ser mais rápido)
 if [ ! -d "SecLists" ]; then 
 	sudo git clone --depth 1 https://github.com/danielmiessler/SecLists.git 
 fi
 
-#==============================================RockYou==============================================
-
-
-
 #==============================================Owasp ZAP==============================================
-sudo snap install zaproxy —classic
+cd ~/src
+wget https://github.com/zaproxy/zaproxy/releases/download/v2.17.0/ZAP_2.17.0_Linux.tar.gz
+tar xvzf ZAP_2.17.0_Linux.tar.gz
+rm ZAP_2.17.0_Linux.tar.gz
+cd ZAP_2.17.0
+
+# Define o caminho absoluto
+ZAP_PATH="$HOME/src/ZAP_2.17.0"
+cd "$ZAP_PATH"
+chmod +x zap.sh
+
+# Cria um link simbólico em /usr/local/bin
+sudo ln -sf "$ZAP_PATH/zap.sh" /usr/local/bin/zap
+
+# Criar atalho no Desktop
+cat <<EOF > ~/.local/share/applications/zaproxy.desktop
+[Desktop Entry]
+Name=OWASP ZAP
+Comment=Web Application Security Testing
+Exec=$HOME/src/ZAP_2.17.0/zap.sh
+Icon=$HOME/src/ZAP_2.17.0/zap.ico
+Terminal=false
+Type=Application
+Categories=Development;Security;
+EOF
+
+chmod +x ~/.local/share/applications/zaproxy.desktop
+cp ~/.local/share/applications/zaproxy.desktop ~/Desktop/
 
 ###================================================================================================###
-echo "Configuração Finalizada! 🚀"
+echo "Configuração Finalizada!"
 sleep 5
 sudo reboot
