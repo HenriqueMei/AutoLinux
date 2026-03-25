@@ -89,6 +89,10 @@ fi
 #==============================================Tools Extras==============================================
 sudo apt install hydra gobuster sqlmap proxychains4 tor mousepad -y
 
+#Opcao 1
+#go install github.com/charmbracelet/glow/v2@latest
+
+#Opcao 2
 #cd ~/src && git clone https://github.com/charmbracelet/glow.git
 #cd glow && go build
 
