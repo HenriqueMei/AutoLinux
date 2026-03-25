@@ -45,7 +45,7 @@ sudo snap install core && sudo snap install amass
 sudo apt install ruby-full build-essential zlib1g-dev -y && sudo gem install wpscan
 
 #==============================================LBD==============================================
-cd ~/src && git clone https://github.com/HenriqueMei/AutoLinux
+cd ~/src && git clone https://github.com/HenriqueMei/AutoLinux.git
 cd ~/src/AutoLinux/prog/lbd
 chmod +x lbd
 sudo cp lbd /usr/bin/lbd
@@ -89,8 +89,8 @@ fi
 #==============================================Tools Extras==============================================
 sudo apt install hydra gobuster sqlmap proxychains4 tor mousepad -y
 
-go install github.com/charmbracelet/glow/v2@lastest
-
+#cd ~/src && git clone https://github.com/charmbracelet/glow.git
+#cd glow && go build
 
 #==============================================The Harvester==============================================
 cd ~/src
@@ -128,12 +128,10 @@ fi
 #==============================================Wordlists (SecLists e RockYou)============================================== 
 echo "Baixando Wordlists (isso pode demorar)..."
 sudo mkdir -p /usr/share/
-sudo mv /src/AutoLinux/wordlist /usr/share/
+sudo mv ~/src/AutoLinux/wordlist /usr/share/
 cd /usr/share/wordlist
-tar xvzf rockyou.tar.gz
-tar xvzf metasploit.tar.gz
-rm rockyou.tar.gz
-rm metasploit.tar.gz
+tar xvzf rockyou.tar.gz && tar xvzf metasploit.tar.gz
+rm rockyou.tar.gz && rm metasploit.tar.gz
 
 # SecLists (Depth 1 para ser mais rápido)
 if [ ! -d "SecLists" ]; then 
@@ -143,8 +141,7 @@ fi
 #==============================================Owasp ZAP==============================================
 cd ~/src
 wget https://github.com/zaproxy/zaproxy/releases/download/v2.17.0/ZAP_2.17.0_Linux.tar.gz
-tar xvzf ZAP_2.17.0_Linux.tar.gz
-rm ZAP_2.17.0_Linux.tar.gz
+tar xvzf ZAP_2.17.0_Linux.tar.gz && rm ZAP_2.17.0_Linux.tar.gz
 cd ZAP_2.17.0
 
 # Define o caminho absoluto
