@@ -15,7 +15,11 @@ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.ta
 sudo apt install xrdp ssl-cert openssh-server -y 
 sudo adduser xrdp ssl-cert
 sudo systemctl enable xrdp ssh
-echo "exec-nate-session" > ~/.xsession
+echo "exec mate-session" > ~/.xsession
+#echo "exec startxfce4" > ~/.xsession
+#echo "exec startplasma-x11" > ~/.xsession
+#echo "exec gnome-session" > ~/.xsession
+#echo "exec cinnamon-session" > ~/.xsession
 
 #==============================================Python e Git==============================================
 # --- 1. Python Base, Git e Go ---
