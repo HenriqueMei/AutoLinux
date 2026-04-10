@@ -3,12 +3,23 @@
 #=====REPARAR=====
 # OWASP ZAP
 
+linux_custon()
+{
+sudo apt install pipx -y
+
+# 2. Instala o Terminal Text Effects de forma isolada e segura
+pipx install terminaltexteffects
+
+# 3. Garante que os atalhos do pipx funcionem no seu usuário
+pipx ensurepath
+}
+
 user_pentest()
 {
     clear
         echo "Com grandes poderes vêm grandes responsabilidades"
         sleep 2
-        sudo apt install nmap wafw00f whatweb whois dnsutils hping3 nbtscan -y
+        sudo apt install nmap wafw00f whatweb whois dnsutils hping3 nbtscan hydra gobuster sqlmap proxychains4 tor sslscan -y
         sudo snap install core && sudo snap install amass
         sudo apt install ruby-full build-essential zlib1g-dev -y && sudo gem install wpscan
         #==== LBD===
@@ -40,8 +51,7 @@ user_pentest()
 
         if ! grep -q "alias john=" ~/.bashrc; then 
             echo "alias john='~/src/john/run/john'" >> ~/.bashrc 
-        fi 
-        sudo apt install hydra gobuster sqlmap proxychains4 tor mousepad -y
+        fi
 #=======The Harvester====
         cd ~/src
         # 1. Instalar o gerenciador 'uv' (necessário para o theHarvester novo) 
@@ -121,14 +131,38 @@ user_pentest()
 
         chmod +x ~/.local/share/applications/zaproxy.desktop
         cp ~/.local/share/applications/zaproxy.desktop ~/Desktop/
-        
+        desktop
 }
 
-system_install()
+notebook_install()
 {
     clear
     echo "====================================="
-    echo "           Preparar Ambiente         "
+    echo "      Preparar Ambiente Notebook     "
+    echo "====================================="
+    echo "Atualizando o Sistema"
+    sleep 1
+    sudo apt update && sudo apt full-upgrade -y
+    echo "Adicionando layouts de teclado (ABNT + US)"
+    gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'br'), ('xkb', 'us')]"
+    echo "Instalando pacotes basicos"
+    sleep 1
+    sudo apt install build-essential curl wget dkms git gnupg golang-go -y
+    sudo apt install python3 python3-pip python3-venv python3-full snapd -y
+    sudo apt install apt-transport-https ca-certificates lsb-release -y #software-properties-common
+    sudo systemctl enable --now snapd.apparmor
+    echo "Finalizando"
+    sleep 4
+    clear
+    echo "Finalizado... Vamos para a próxima etapa"
+    desktop
+}
+
+desktop_install()
+{
+    clear
+    echo "====================================="
+    echo "      Preparar Ambiente Desktop      "
     echo "====================================="
     echo "Atualizando o Sistema"
     sleep 1
@@ -152,7 +186,7 @@ user_install()
 {
     clear
     echo "====================================="
-    echo "    INSTALADOR DE PROGRAMAS          "
+    echo "       INSTALADOR DE PROGRAMAS       "
     echo "====================================="
     echo "Escolha os programas:"
     echo "1 - Steam"
@@ -163,54 +197,63 @@ user_install()
     echo "6 - Google Chrome"
     echo "7 - Proton VPN"
     echo "8 - Burp"
+    echo "9 - Glow"
     echo "---------------------------"
     echo "Digite os números separados por espaço"
     echo "Exemplo: 1 2 3"
     read -p "Lista de Programas: " listProg
 
+    clear
     for item in $listProg; do
         case $item in
         1)
             echo "[+] Instalando Steam"
             sudo snap install steam
-            ;;
+        ;;
         2)
             echo "[+] Instalando Discord"
             sudo snap install discord
-            ;;
+        ;;
         3)
             echo "[+] Instalando Spotify"
             sudo snap install spotify
-            ;;
+        ;;
         4)
             echo "[+] Instalando Telegram"
             sudo snap install telegram-desktop
-            ;;
+        ;;
         5)
             echo "[+] Instalando OBS"
             sudo snap install obs-studio --classic
-            ;;
+        ;;
         6)
             echo "[+] Instalando Google"
             wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
             sudo apt install ./google-chrome-stable_current_amd64.deb -y
             rm google-chrome-stable_current_amd64.deb
-            ;;
+        ;;
         7)
             echo "[+] Instalando Proton VPN"
             wget https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.8_all.deb
             sudo dpkg -i ./protonvpn-stable-release_1.0.8_all.deb && sudo apt update
             sudo apt install proton-vpn-gnome-desktop -y
             rm protonvpn-stable-release_1.0.8_all.deb
-            ;;
+        ;;
         8)
             echo "[+] Instalando Burp Suite Community"
             wget -O ~/burp.sh "https://portswigger.net/burp/releases/download?product=community&version=2026.2.4&type=Linux"
             chmod +x ~/burp.sh
-            ~/burp.sh --quiet --user-install
+            ~/burp.sh -q
             sudo ln -sf ~/BurpSuiteCommunity/BurpSuiteCommunity /usr/local/bin/burpsuite
             rm ~/burp.sh
-            ;;
+        ;;
+        9)
+            echo "[+] Instalando Glow"
+            sudo mkdir -p /etc/apt/keyrings
+            curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+            echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
+            sudo apt update && sudo apt install glow
+        ;;
         0)
             desktop
             ;;
@@ -218,51 +261,69 @@ user_install()
             echo "[-] Opção '$item' não existe."
         esac
     done
+    desktop
 }
 
 desktop()
 {
     clear
     while true; do
-    echo "---------------------------"
+    echo "====================================="
+    echo "         Configurações Gerais        "
+    echo "====================================="
     echo "Escolha uma opção:"
-    echo "1 - Configurações para Notebook "
-    echo "2 - Instalar Programas"
-    echo "3 - Ambiente para Pentest"
+    echo "1 - Ambiente Notebook "
+    echo "2 - Ambiente Desktop  "
+    echo "3 - Instalar Programas"
+    echo "4 - Ambiente para Pentest"
+    echo "5 - Customização OS"
     echo "9 - Menu Principal"
     echo "0 - Sair"
     echo "---------------------------"
-    echo "Se for um computador recem formatado, recomendo a opção 1 primeiro"
+    echo "Se for uma maquina recem formatada, execute a opção 1(Notebook) 2(Desktop)..."
 
     read -p "Opção: " opcao
 
     case $opcao in
-    1)
-        echo "Preparando para configurar ambiente"
-        system_install
-    ;;
-    2)
-        echo "Carregando lista de programas..."
-        echo "Aguarde um momento"
-        user_install
+        1)
+            echo "Preparando para configurar ambiente"
+            sleep 1
+            notebook_install
         ;;
-    3)
-        user_pentest
-    9)
-        echo "Retornando para o Menu Principal"
-        sleep 1
-        menu_principal
+        2)
+            echo "Preparando para configurar ambiente"
+            sleep 1
+            desktop_install
         ;;
-    0)
-                    echo "Saindo..."
-                sleep 1
-                clear
-                exit 0
-    ;;
-                *)
-                echo "Opção inválida!"
-                sleep 1
-                ;;
+        3)
+            echo "Carregando lista de programas..."
+            echo "Aguarde um momento"
+            sleep 1
+            user_install
+            ;;
+        4)
+            user_pentest
+            ;;
+        5)
+            echo "Arte é indescritivel..."
+            os_custom
+            sleep 1
+            ;;
+        9)
+            echo "Retornando para o Menu Principal"
+            sleep 1
+            menu_principal
+            ;;
+        0)
+            echo "Saindo..."
+            sleep 1
+            clear
+            exit 0
+        ;;
+        *)
+            echo "Opção inválida!"
+            sleep 1
+            ;;
     esac
     done
 }
@@ -278,21 +339,26 @@ clear
         echo "Escolha uma opção:"
         echo "1 - Computador/Notebook"
         echo "2 - VM"
-        echo "3 - Sair"
+        echo "3 - Custom Linux"
+        echo "0 - Sair"
         echo "---------------------------"
 
         read -p "Opção: " opcao
 
         case $opcao in
             1)
-                echo "Montando ambiente..."
+                echo "Preparando Opcões..."
                 sleep 1
                 desktop
                 ;;
             2)
-                echo "Executando Opção 2..."
+                echo "Preparando Opcões..."
                 ;;
             3)
+                echo "Preparando Opções..."
+                linux_custon
+                ;;
+            0)
                 echo "Saindo..."
                 sleep 1
                 clear

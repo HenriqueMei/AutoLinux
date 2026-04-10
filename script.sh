@@ -15,7 +15,7 @@ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.ta
 sudo apt install xrdp ssl-cert openssh-server -y 
 sudo adduser xrdp ssl-cert
 sudo systemctl enable xrdp ssh
-echo "exec mate-session" > ~/.xsession
+#echo "exec mate-session" > ~/.xsession
 #echo "exec startxfce4" > ~/.xsession
 #echo "exec startplasma-x11" > ~/.xsession
 #echo "exec gnome-session" > ~/.xsession
@@ -37,7 +37,7 @@ sudo apt install python3-pexpect python3-cryptography python3-requests \
 python3-openssl python3-pyte -y
  
 #==============================================Recon==============================================
-sudo apt install curl nmap wafw00f whatweb whois dnsutils hping3 nbtscan -y
+sudo apt install curl nmap wafw00f whatweb whois dnsutils hping3 nbtscan sslscan -y
 
 #==============================================Amass via Snap==============================================
 sudo apt install snapd -y 
