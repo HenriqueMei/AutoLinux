@@ -3,7 +3,9 @@
 ### Building MD File
 
 !
-    [Teste](img/Fluxo.png)
+    [Teste](https://github.com/HenriqueMei/AutoLinux/blob/main/img/Fluxo.png)
+
+![Desktop](https://raw.githubusercontent.com/Bahaaio/wallpapers/main/.github/screenshots/desktop.png)
 
 ```sh
 comando
