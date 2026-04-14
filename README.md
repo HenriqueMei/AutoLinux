@@ -2,10 +2,8 @@
 
 ### Building MD File
 
-'''
-sh
+```sh
 comando
-bash
-'''
+```
 
 > Anotacao
